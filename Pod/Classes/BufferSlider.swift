@@ -170,7 +170,7 @@ public enum VerticalPosition:Int{
 
 }
 
-extension Double{
+private extension Double{
     var CGFloatValue: CGFloat {
         return CGFloat(self)
     }
