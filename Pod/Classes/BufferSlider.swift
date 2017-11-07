@@ -67,9 +67,7 @@ public enum VerticalPosition:Int{
     ///BorderWidth property. @IBInspectable
     @IBInspectable open var borderWidth: Double = 0.5{
         didSet{
-            if borderWidth < 0.1 {
-                borderWidth = 0.1
-            }
+            borderWidth = max(borderWidth, 0.1)
             self.setNeedsDisplay()
         }
     }
@@ -77,9 +75,7 @@ public enum VerticalPosition:Int{
     ///Slider height property. @IBInspectable
     @IBInspectable open var sliderHeight: Double = 2 {
         didSet{
-            if sliderHeight < 1 {
-                sliderHeight = 1
-            }
+            sliderHeight = max(sliderHeight, 1)
         }
     }
     ///Adaptor property. Stands for vertical position of slider. (Swift and Objective-C)
@@ -93,12 +89,10 @@ public enum VerticalPosition:Int{
         set{
             let r = abs(newValue) % 3
             switch r {
-            case 1:
-                sliderPosition = .top
-            case 2:
-                sliderPosition = .center
             case 0:
                 sliderPosition = .bottom
+            case 1:
+                sliderPosition = .top
             default:
                 sliderPosition = .center
             }
@@ -140,11 +134,11 @@ public enum VerticalPosition:Int{
 
         let path = UIBezierPath()
         if roundedSlider {
-            path.addArc(withCenter: CGPoint(x: sliderRect.minX + radius, y: sliderRect.minY+radius), radius: radius, startAngle: CGFloat(M_PI)/2, endAngle: -CGFloat(M_PI)/2, clockwise: true)
+            path.addArc(withCenter: CGPoint(x: sliderRect.minX + radius, y: sliderRect.minY+radius), radius: radius, startAngle: .pi/2, endAngle: -.pi/2, clockwise: true)
             path.addLine(to: CGPoint(x: sliderRect.maxX-radius, y: sliderRect.minY))
-            path.addArc(withCenter: CGPoint(x: sliderRect.maxX-radius, y: sliderRect.minY+radius), radius: radius, startAngle: -CGFloat(M_PI)/2, endAngle: CGFloat(M_PI)/2, clockwise: true)
+            path.addArc(withCenter: CGPoint(x: sliderRect.maxX-radius, y: sliderRect.minY+radius), radius: radius, startAngle: -.pi/2, endAngle: .pi/2, clockwise: true)
             path.addLine(to: CGPoint(x: sliderRect.minX + radius, y: sliderRect.minY+height))
-        }else{
+        } else {
             path.move(to: CGPoint(x: sliderRect.minX, y: sliderRect.minY+height))
             path.addLine(to: sliderRect.origin)
             path.addLine(to: CGPoint(x: sliderRect.maxX, y: sliderRect.minY))
@@ -158,10 +152,7 @@ public enum VerticalPosition:Int{
         if !hollow { path.fill() }
         path.addClip()
         
-        var fillHeight = sliderRect.size.height-borderWidth.CGFloatValue
-        if fillHeight < 0 {
-            fillHeight = 0
-        }
+        let fillHeight = max(sliderRect.size.height-borderWidth.CGFloatValue, 0)
         
         let fillRect = CGRect(
             x: sliderRect.origin.x + sliderRect.size.width*CGFloat(bufferStartValue),
@@ -169,11 +160,10 @@ public enum VerticalPosition:Int{
             width: sliderRect.size.width*CGFloat(bufferEndValue-bufferStartValue),
             height: fillHeight)
         if let color = bufferColor { color.setFill() }
-        else if let color = self.superview?.tintColor{ color.setFill()}
+        else if let color = self.superview?.tintColor{color.setFill()}
         else{ UIColor(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0).setFill() }
         
         UIBezierPath(rect: fillRect).fill()
-        
         
         if let color = progressColor{
             color.setFill()
@@ -187,7 +177,6 @@ public enum VerticalPosition:Int{
     }
 
 }
-
 
 extension Double{
     var CGFloatValue: CGFloat {
