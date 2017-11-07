@@ -39,7 +39,7 @@ public enum VerticalPosition:Int{
             if bufferStartValue > bufferEndValue {
                 bufferStartValue = bufferEndValue
             }
-            self.setNeedsDisplay()
+            setNeedsDisplay()
         }
     }
     ///0.0 ~ 1.0. @IBInspectable
@@ -51,7 +51,7 @@ public enum VerticalPosition:Int{
             if bufferEndValue < bufferStartValue{
                 bufferEndValue = bufferStartValue
             }
-            self.setNeedsDisplay()
+            setNeedsDisplay()
         }
     }
     
@@ -68,7 +68,7 @@ public enum VerticalPosition:Int{
     @IBInspectable open var borderWidth: Double = 0.5{
         didSet{
             borderWidth = max(borderWidth, 0.1)
-            self.setNeedsDisplay()
+            setNeedsDisplay()
         }
     }
     
@@ -87,15 +87,7 @@ public enum VerticalPosition:Int{
             return sliderPosition.rawValue
         }
         set{
-            let r = abs(newValue) % 3
-            switch r {
-            case 0:
-                sliderPosition = .bottom
-            case 1:
-                sliderPosition = .top
-            default:
-                sliderPosition = .center
-            }
+            sliderPosition = VerticalPosition(rawValue: newValue) ?? .center
         }
     }
     ///Vertical position of slider. (Swift only)
@@ -119,7 +111,7 @@ public enum VerticalPosition:Int{
 //        UIColor.redColor().colorWithAlphaComponent(0.3).set()
 //        UIRectFrame(rect)
         baseColor.set()
-        let rect = self.bounds.insetBy(dx: CGFloat(borderWidth)+padding, dy: CGFloat(borderWidth))
+        let rect = bounds.insetBy(dx: CGFloat(borderWidth)+padding, dy: CGFloat(borderWidth))
         let height = sliderHeight.CGFloatValue
         let radius = height/2
         var sliderRect = CGRect(x: rect.origin.x, y: rect.origin.y + (rect.height/2-radius), width: rect.width, height: rect.width) //default center
@@ -160,7 +152,7 @@ public enum VerticalPosition:Int{
             width: sliderRect.size.width*CGFloat(bufferEndValue-bufferStartValue),
             height: fillHeight)
         if let color = bufferColor { color.setFill() }
-        else if let color = self.superview?.tintColor{color.setFill()}
+        else if let color = superview?.tintColor{color.setFill()}
         else{ UIColor(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0).setFill() }
         
         UIBezierPath(rect: fillRect).fill()
@@ -178,7 +170,7 @@ public enum VerticalPosition:Int{
 
 }
 
-extension Double{
+private extension Double{
     var CGFloatValue: CGFloat {
         return CGFloat(self)
     }
